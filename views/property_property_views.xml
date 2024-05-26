@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sha_property_property_view_form" model="ir.ui.view">
+            <field name="name">property.property.view.form</field>
+            <field name="model">property.property</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,available,sold"/>
+                        <button name="action_available" string="Available" type="object" class="btn-primary"
+                                attrs="{'invisible':[('state','!=','draft')]}"/>
+                        <button name="action_draft" string="Draft" type="object" class="btn-outline-primary"
+                                attrs="{'invisible':[('state','!=','available')]}"/>
+                    </header>
+                    <sheet>
+                        <div name="button_box" class="oe_button_box">
+                            <button name="action_property_sale_view" type="object" class="oe_stat_button"
+                                    icon="fa-dollar" string="Sale" attrs="{'invisible':[('state','!=','sold')]}"/>
+                        </div>
+
+                        <widget name="web_ribbon" bg_color="bg-success" text="SOLD"
+                                attrs="{'invisible': [('state', '!=', 'sold')]}"/>
+
+                        <field name="image" widget="image" class="oe_avatar"/>
+                        <div class="oe_title">
+                            <h3 class="o_row">
+                                <p>Property Details |</p>
+                                <field name="code"/>
+                            </h3>
+                            <hr/>
+                            <h3 class="o_row">
+                                <label for="plot_name" string="Plot Name"/>
+                                <field name="plot_name"/>
+                            </h3>
+                            <br/>
+                            <h4 class="o_row">
+                                <field name="property_block_ids" placeholder="Select Block"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                -
+                                <field name="property_size_ids" placeholder="Select Katha"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                - Plot
+                                <field name="plot_number" placeholder="Enter Plot Number"/>
+                            </h4>
+                            <br/>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="property_type" widget="radio"
+                                       options="{'horizontal': True}" invisible="1"/>
+                                <field name="responsible_id" widget="many2one_avatar_user"
+                                       options='{"no_open": True, "no_create": True}'/>
+                                <field name="landlord_id"
+                                       options='{"no_open": True, "no_create": True}'/>
+                            </group>
+                            <group>
+                                <field name="property_tags" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Address Details">
+                                <field name="street" placeholder="Address Line..."/>
+                            </group>
+                            <group string="Price Details" name="price_details">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="unit_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="is_installment_payment"/>
+                            </group>
+                        </group>
+                        <group string="Installment Payment Terms"
+                               attrs="{'readonly': [('is_installment_payment','!=',True)]}">
+                            <group>
+                                <field name="monthly_or_yearly"
+                                       attrs="{'readonly': [('is_installment_payment','!=',True)]}"/>
+                                <field name="no_of_installments"/>
+                            </group>
+                            <group>
+                                <field name="no_of_months"
+                                       attrs="{'readonly': [('monthly_or_yearly', '!=', 'monthly')]}"/>
+                                <field name="no_of_years"
+                                       attrs="{'readonly': [('monthly_or_yearly', '!=', 'yearly')]}"/>
+                                <field name="amount_per_installment" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description"/>
+                            </page>
+                            <page string="Images">
+                                <field name="property_image_ids">
+                                    <kanban>
+                                        <field name="id"/>
+                                        <field name="name"/>
+                                        <field name="image"/>
+                                        <field name="description"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div t-attf-class="oe_kanban_global_click">
+                                                    <div class="o_kanban_image">
+                                                        <field name="image"
+                                                               widget="image"
+                                                               class="oe_avatar"/>
+                                                    </div>
+                                                    <div class="oe_kanban_details">
+                                                        <t class="o_kanban_record_title">
+                                                            <strong>
+                                                                <field name="name"/>
+                                                            </strong>
+                                                            <br/>
+                                                            <field name="description"/>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                    <form>
+                                        <sheet>
+                                            <group>
+                                                <group>
+                                                    <field name="name"/>
+                                                    <field name="description"/>
+                                                </group>
+                                                <group>
+                                                    <field name="image"
+                                                           widget="image"
+                                                           class="oe_avatar"/>
+                                                </group>
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Measurement">
+                                <field name="area_measurement_ids">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="width"/>
+                                        <field name="length"/>
+                                        <field name="height"/>
+                                        <field name="area"/>
+                                    </tree>
+                                </field>
+                                <h2 class="oe_subtotal_footer oe_right">
+                                    <group>
+                                        <field name="total_sq_feet"/>
+                                    </group>
+                                </h2>
+                            </page>
+                            <page string="Facilities">
+                                <field name="facilities_ids">
+                                    <tree>
+                                        <field name="facility"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Nearby Connectivity">
+                                <field name="nearby_connectivity_ids">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="direction"/>
+                                        <field name="kilometer"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="sha_property_property_view_tree" model="ir.ui.view">
+            <field name="name">property.property.view.tree</field>
+            <field name="model">property.property</field>
+            <field name="arch" type="xml">
+                <tree decoration-warning="state=='sold'">
+                    <field name="plot_name"/>
+                    <field name="code"/>
+                    <field name="street"/>
+                    <field name="responsible_id"/>
+                    <field name="unit_price"/>
+                    <field name="is_installment_payment"/>
+                    <field name="monthly_or_yearly"/>
+                    <field name="no_of_installments"/>
+                    <field name="state" decoration-warning="state=='sold'" widget="badge"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="property_property_view_kanban" model="ir.ui.view">
+            <field name="name">property.property.view.kanban</field>
+            <field name="model">property.property</field>
+            <field name="arch" type="xml">
+                <kanban class="o_hr_employee_kanban" js_class="hr_employee_kanban"
+                        sample="1">
+                    <field name="id"/>
+                    <field name="plot_name"/>
+                    <field name="code"/>
+                    <field name="image"/>
+                    <field name="street"/>
+                    <field name="responsible_id"/>
+                    <field name="unit_price"/>
+                    <field name="state" invisible="1"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-att-class="'oe_kanban_global_click o_kanban_record_has_image_fill o_hr_kanban_record'"
+                                 t-att-style="record.state.raw_value === 'sold' ? 'border: 2px solid #FF8080;' :
+                         record.state.raw_value === 'available' ? 'border: 2px solid #28a745;' :
+                         record.state.raw_value === 'draft' ? 'border: 2px solid #17a2b8;' : ''">
+                                <field name="image"
+                                       class="o_kanban_image_fill_left d-block"
+                                       preview_image="image"
+                                       widget="image"
+                                       options="{'zoom': true, 'zoom_delay': 1000}"/>
+
+                                <div class="oe_kanban_details">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <h3>
+                                                    Plot:
+                                                    <field name="plot_number"/>
+                                                </h3>
+                                            </strong>
+                                            <span class="o_kanban_record_subtitle">
+                                                <field name="plot_name"/>
+                                            </span>
+                                            <span>
+                                                <strong>
+                                                    <field name="code"/>
+                                                </strong>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div t-if="record.street.raw_value">
+                                        Address:
+                                        <t t-esc="record.street.value"/>
+                                    </div>
+                                    <div t-if="record.responsible_id.raw_value">
+                                        Responsible:
+                                        <t t-esc="record.responsible_id.value"/>
+                                    </div>
+                                    <strong>
+                                        Status:
+                                        <field name="state" widget="badge" decoration-danger="state == 'sold'"
+                                               decoration-success="state == 'available'"
+                                               decoration-info="state == 'draft'"/>
+                                    </strong>
+                                </div>
+                                <div class="oe_kanban_content o_hr_employee_kanban_bottom position-absolute bottom-0 start-0 end-0 me-2 pe-none">
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_left"/>
+                                        <div class="oe_kanban_bottom_right float-end pe-auto">
+                                            <div class="hr_activity_container mb-1 me-n1">
+                                                <field name="activity_ids"
+                                                       widget="kanban_activity"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+        <record id="sha_property_property_action" model="ir.actions.act_window">
+            <field name="name">Property Management</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">property.property</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create Your First Property!
+                </p>
+            </field>
+        </record>
+
+        <record id="sha_property_property_view_search" model="ir.ui.view">
+            <field name="name">property.property.view.search</field>
+            <field name="model">property.property</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="plot_name" string="Plot Name"/>
+                    <field name="code" string="Property Code"/>
+                    <field name="street" string="Street"/>
+                    <field name="responsible_id"/>
+                    <field name="unit_price"/>
+                    <field name="is_installment_payment"/>
+                    <field name="monthly_or_yearly"/>
+                    <field name="no_of_installments"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Status" context="{'group_by':'state'}"
+                                name="state"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <menuitem id="sha_property_root_menu" name="Property Management"
+                  web_icon="sha_property_mgmt,static/description/app_icon.png"/>
+        <menuitem id="sha_property_property_menu" name="Properties"
+                  parent="sha_property_root_menu"
+                  action="sha_property_property_action" sequence="3"/>
+    </data>
+</odoo>
